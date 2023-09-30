@@ -1,0 +1,12 @@
+title: Linux Kernel tyro  #标题
+description: 一步一步往上爬，背着我的蜗牛壳，爬到葡萄架。    #简介或者格言
+author: 李嘉图     #作者
+language: zh-CN     #主题语言
+timezone: Asia/Shanghai    #中国的时区	
+
+deploy:
+  type: git
+  repository: https://github.com/Ricardo0106/Ricardo0106.github.io.git
+  branch: master
+
+theme: next   #主题改为next
