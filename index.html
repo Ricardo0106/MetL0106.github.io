@@ -1,192 +1,35 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Linux Kernel tyro</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Linux Kernel tyro"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Linux Kernel tyro"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="一步一步往上爬，背着我的蜗牛壳，爬到葡萄架。"><meta property="og:type" content="blog"><meta property="og:title" content="Linux Kernel tyro"><meta property="og:url" content="http://example.com/"><meta property="og:site_name" content="Linux Kernel tyro"><meta property="og:description" content="一步一步往上爬，背着我的蜗牛壳，爬到葡萄架。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:author" content="李嘉图"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="http://example.com/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com"},"headline":"Linux Kernel tyro","image":["http://example.com/img/og_image.png"],"author":{"@type":"Person","name":"李嘉图"},"publisher":{"@type":"Organization","name":"Linux Kernel tyro","logo":{"@type":"ImageObject","url":"http://example.com/img/logo.svg"}},"description":"一步一步往上爬，背着我的蜗牛壳，爬到葡萄架。"}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
 
-<link rel="stylesheet" href="/css/main.css">
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
 
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
-  </script>
-
-  <meta name="description" content="一步一步往上爬，背着我的蜗牛壳，爬到葡萄架。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Linux Kernel tyro">
-<meta property="og:url" content="http://example.com/index.html">
-<meta property="og:site_name" content="Linux Kernel tyro">
-<meta property="og:description" content="一步一步往上爬，背着我的蜗牛壳，爬到葡萄架。">
-<meta property="og:locale" content="zh_CN">
-<meta property="article:author" content="李嘉图">
-<meta name="twitter:card" content="summary">
-
-<link rel="canonical" href="http://example.com/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : true,
-    isPost : false,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>Linux Kernel tyro</title>
-  
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Linux Kernel tyro</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-  </ul>
-</nav>
-
-
-
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content index posts-expand">
-            
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/09/30/MissingLi/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="李嘉图">
-      <meta itemprop="description" content="一步一步往上爬，背着我的蜗牛壳，爬到葡萄架。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Linux Kernel tyro">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/09/30/MissingLi/" class="post-title-link" itemprop="url">MissingLi</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2023-09-30 16:43:59 / 修改时间：16:59:08" itemprop="dateCreated datePublished" datetime="2023-09-30T16:43:59+08:00">2023-09-30</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="/imgs/%E5%BF%83%E6%83%85%E8%AE%B0%E5%BD%95/%E5%BD%A9%E8%99%B9.jpg"></p>
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Linux Kernel tyro" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item is-active" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-09-30T08:43:59.000Z" title="2023/9/30 16:43:59">2023-09-30</time>发表</span><span class="level-item"><time dateTime="2023-09-30T08:59:08.254Z" title="2023/9/30 16:59:08">2023-09-30</time>更新</span><span class="level-item">2 分钟读完 (大约227个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/09/30/MissingLi/">MissingLi</a></p><div class="content"><p><img src="/imgs/%E5%BF%83%E6%83%85%E8%AE%B0%E5%BD%95/%E5%BD%A9%E8%99%B9.jpg"></p>
 <p>今天学校里出现了两个彩虹，含娃。</p>
 <p>我根本舍不得不找你，我根本舍不得不理你。</p>
 <p>我根本不敢找你，我好想你！</p>
@@ -203,71 +46,7 @@
 <p>上一次,我等了三十年呢</p>
 <p>很多次的感受跟现在一样.</p>
 <p>我们以后一定会是一家人.</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/09/29/%E5%A4%B4%E8%84%91%E7%89%B9%E5%B7%A5%E9%98%9F%E8%A7%82%E8%B5%8F%E6%8A%A5%E5%91%8A-%E9%87%8D%E8%A6%81/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="李嘉图">
-      <meta itemprop="description" content="一步一步往上爬，背着我的蜗牛壳，爬到葡萄架。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Linux Kernel tyro">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/09/29/%E5%A4%B4%E8%84%91%E7%89%B9%E5%B7%A5%E9%98%9F%E8%A7%82%E8%B5%8F%E6%8A%A5%E5%91%8A-%E9%87%8D%E8%A6%81/" class="post-title-link" itemprop="url">头脑特工队观赏报告(重要)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-09-29 19:24:05" itemprop="dateCreated datePublished" datetime="2023-09-29T19:24:05+08:00">2023-09-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-09-30 13:04:11" itemprop="dateModified" datetime="2023-09-30T13:04:11+08:00">2023-09-30</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>被遗忘的想象会被送去记忆垃圾场，清理工拿走bing bond的音乐火箭，认为rilay不在需要它，bingbong惊慌的追上去也没能阻止。bingbong看着跌落深渊的火箭，一下跌坐在地上。我不知道为什么，看一个电影，我总是不能抓住主线，我看到这么一个小插曲，都会想到自己做的梦，我也惊慌的拉着很大的货轮，拉了很久很久，手上全是泡，还是没有把你留下。可能我当时的心情跟这个粉色小猪很像吧。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-09-29T11:24:05.000Z" title="2023/9/29 19:24:05">2023-09-29</time>发表</span><span class="level-item"><time dateTime="2023-09-30T05:04:11.984Z" title="2023/9/30 13:04:11">2023-09-30</time>更新</span><span class="level-item">8 分钟读完 (大约1212个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/09/29/%E5%A4%B4%E8%84%91%E7%89%B9%E5%B7%A5%E9%98%9F%E8%A7%82%E8%B5%8F%E6%8A%A5%E5%91%8A-%E9%87%8D%E8%A6%81/">头脑特工队观赏报告(重要)</a></p><div class="content"><p>被遗忘的想象会被送去记忆垃圾场，清理工拿走bing bond的音乐火箭，认为rilay不在需要它，bingbong惊慌的追上去也没能阻止。bingbong看着跌落深渊的火箭，一下跌坐在地上。我不知道为什么，看一个电影，我总是不能抓住主线，我看到这么一个小插曲，都会想到自己做的梦，我也惊慌的拉着很大的货轮，拉了很久很久，手上全是泡，还是没有把你留下。可能我当时的心情跟这个粉色小猪很像吧。</p>
 <p><img src="/imgs/%E5%A4%B4%E8%84%91%E7%89%B9%E5%B7%A5%E9%98%9F/rilay2.png"></p>
 <p>我打了好多好多字啊，</p>
 <p>可我都删了。</p>
@@ -288,140 +67,12 @@
 <p>谢谢你，lyh，带给我这么多完整的情绪。</p>
 <p>搜到这个动画，看着奇怪的画风，让我很难点进去看，还好是含娃让我看的，不然我可能就错过了。</p>
 <p>头脑特工队的导演是从他女儿那得到的灵感，也意图将这部动画做给他女儿。Rilay的一生很多奇妙的情感，长大的过程就是道别的过程，和曾经喜欢的一些东西一一道别。我做过一个很久的梦，梦里，我陪你度过了30年的青春，至少那一次我陪着你走完了我的一生，接下来的一生，我们还有很多时间，我不要跟你道别，因为我们是一家人，我们家现在只有我们两个人。我要好好陪着你，反正你拒绝也没有用，你可管不住我。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/09/29/Linux%E9%A9%B1%E5%8A%A8-%E6%9E%84%E9%80%A0%E5%92%8C%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%9D%97%E4%B8%AA%E4%BA%BA%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="李嘉图">
-      <meta itemprop="description" content="一步一步往上爬，背着我的蜗牛壳，爬到葡萄架。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Linux Kernel tyro">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/09/29/Linux%E9%A9%B1%E5%8A%A8-%E6%9E%84%E9%80%A0%E5%92%8C%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%9D%97%E4%B8%AA%E4%BA%BA%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">Linux驱动-构造和运行模块个人学习总结</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-09-29 10:40:26" itemprop="dateCreated datePublished" datetime="2023-09-29T10:40:26+08:00">2023-09-29</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-09-30 16:58:16" itemprop="dateModified" datetime="2023-09-30T16:58:16+08:00">2023-09-30</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="构造和运行模块"><a href="#构造和运行模块" class="headerlink" title="构造和运行模块"></a>构造和运行模块</h1><p>我发现对于学习任何一门知识，在最开始只能背诵或抄写别人的一些总结，所以tyro阶段我会抄写一些别人的文章，进行复习总结。<br></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-09-29T02:40:26.000Z" title="2023/9/29 10:40:26">2023-09-29</time>发表</span><span class="level-item"><time dateTime="2023-09-30T08:58:16.650Z" title="2023/9/30 16:58:16">2023-09-30</time>更新</span><span class="level-item">5 分钟读完 (大约816个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/09/29/Linux%E9%A9%B1%E5%8A%A8-%E6%9E%84%E9%80%A0%E5%92%8C%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%9D%97%E4%B8%AA%E4%BA%BA%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/">Linux驱动-构造和运行模块个人学习总结</a></p><div class="content"><h1 id="构造和运行模块"><a href="#构造和运行模块" class="headerlink" title="构造和运行模块"></a>构造和运行模块</h1><p>我发现对于学习任何一门知识，在最开始只能背诵或抄写别人的一些总结，所以tyro阶段我会抄写一些别人的文章，进行复习总结。<br></p>
 <p>我记得小时候看过一部电影《心灵捕手》，虽然主线剧情不是我要说的，但我仍然记者记忆中有个桥段，Will在哈佛附近的酒吧遇到Skylar的时候，Will最铁的哥们查克冒充历史系学生和美女Skylar搭讪，但哈佛大学的学生克拉克看破了查克是冒牌货，于是过来考查克历史学知识，Will不止回答了这些知识，还输出了一顿自己的理解。我一直不明白，同为学生时代的我们，究竟会有什么差距呢，后来看到这一段，我才发现，只有能输出自己的东西才算是在这个领域有所了解了吧？所以tyro阶段我也只能摘抄一些别人消化的知识点，多希望我也能有一天输出自己的东西。</p>
 <p><img src="/imgs/%E5%A4%96%E8%AE%BE%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/%E5%BF%83%E7%81%B5%E6%8D%95%E6%89%8B.webp"></p>
 <p><small>提到《心灵捕手》我又想到:<br><br>你年轻彪悍，我如果和你谈论战争，你大可以向我大抛莎士比亚，背诵“共赴战场，亲爱的朋友”，但你从未亲临战阵，未试过把挚友的头拥入怀里，看着他吸着最后一口气，凝望着你，向你求助。不要以为，我了解你。也许我可以通过“知识”来看你，但那不是你，除非你愿意谈谈你自己，否则我不知道你到底是谁。有时候喜欢是一种非常简单的事，我没有进入过你的世界，只听你讲过自己的故事，你人生的前25年从未参与过，我喜欢的只是我所认识的25岁的你。我不知道为什么，我真真实实的做了一场梦，很久很久的梦，我把人生的25年从头过了一遍，非常真切的感受，30年的人生所有的故事主角都是你，我才发现，我的这份喜欢似乎是贯彻了这痛苦的一生。</small></p>
 <p><small>ANY WAY，写这些东西的时候我的状态是非常不好的，最近这两年我失去了爱我的外婆，得了很多很重的疾病，毕业选择的第一家公司在春招结束的时候解散了，还有一个她。在这之前我的世界没有什么情绪，对生活也没有热情，感谢她给我平庸的人生带来了一些阳光。让我捡起来对生活的热爱，谢谢你，u complete me。人生太多变化，不知道还能在一起多久，我们已经是家人了吧，不要忘记我奥，死亡不是真的逝去，遗忘才是永恒的消亡。</small></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/09/28/I2C%E9%A9%B1%E5%8A%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="李嘉图">
-      <meta itemprop="description" content="一步一步往上爬，背着我的蜗牛壳，爬到葡萄架。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Linux Kernel tyro">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/09/28/I2C%E9%A9%B1%E5%8A%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">I2C驱动框架学习</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-09-28 21:43:49" itemprop="dateCreated datePublished" datetime="2023-09-28T21:43:49+08:00">2023-09-28</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-09-30 13:04:11" itemprop="dateModified" datetime="2023-09-30T13:04:11+08:00">2023-09-30</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="I2C通信："><a href="#I2C通信：" class="headerlink" title="I2C通信："></a>I2C通信：</h1><p><strong>I2C集成电路总线是一种串行的通信总线，使用主从架构</strong><br>特点：<br>只需要两条双向总线（SDA串行数据线、SCL串行时钟线）<br>所有组件之间都存在简单的主从关系，连接到总线的每个设备都可以通过唯一地址进行软件寻址。<br>I2C是真正的多主设备总线，可以提供仲裁和冲突检测。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-09-28T13:43:49.000Z" title="2023/9/28 21:43:49">2023-09-28</time>发表</span><span class="level-item"><time dateTime="2023-09-30T05:04:11.983Z" title="2023/9/30 13:04:11">2023-09-30</time>更新</span><span class="level-item">41 分钟读完 (大约6205个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/09/28/I2C%E9%A9%B1%E5%8A%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/">I2C驱动框架学习</a></p><div class="content"><h1 id="I2C通信："><a href="#I2C通信：" class="headerlink" title="I2C通信："></a>I2C通信：</h1><p><strong>I2C集成电路总线是一种串行的通信总线，使用主从架构</strong><br>特点：<br>只需要两条双向总线（SDA串行数据线、SCL串行时钟线）<br>所有组件之间都存在简单的主从关系，连接到总线的每个设备都可以通过唯一地址进行软件寻址。<br>I2C是真正的多主设备总线，可以提供仲裁和冲突检测。</p>
 <h3 id="CAN总线仲裁："><a href="#CAN总线仲裁：" class="headerlink" title="CAN总线仲裁："></a>CAN总线仲裁：</h3><p>CAN总线采用的是一种叫做“载波监测，多主掌控／冲突避免”（CSMA／CA）的通信模式。这种总线仲裁方式允许总线上的任何一个设各都有机会取得总线的控制权并向外发送数据。如果在同一时刻有2个或2个以上的设各要求发送数据，就会产生总线冲突，CAN总线能够实时地检测这些冲突并对其进行仲裁，从而使具有高优先级的数据不受任何损坏地传输。<br>当总线处于空闲状态时呈隐性电平，此时任何节点都可以向总线发送显性电平作为帧的开始。如果2个或2个以上同时发送就会产生竞争。CAN总线解决竞争的方法同以太网的CSMA／CD方法基本相似。此外，CAN总线做了改进并采用CSMA／CA访问总线，按位对标识符进行仲裁。各节点在向总线发送电平的同时，也对总线上的电平读取，并与自身发送的电平进行比较，如果电平相同继续发送下一位，不同则停止发送退出总线竞争。剩余的节点继续上述过程，直到总线上只剩下1个节点发送的电平，总线竞争结束，优先级高的节点获得总线的控制权。<br>CAN总线以报文为单位进行数据传输，具有最小二进制数的标识符的节点具有最高的优先级。这种优先级一旦在系统设计时确定就不能随意地更改，总线读取产生的冲突主要靠这些位仲裁解决。<br><img src="/imgs/I2C%E9%A9%B1%E5%8A%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/CAN%E6%80%BB%E7%BA%BF%E8%8A%82%E7%82%B9%E8%AE%BF%E9%97%AE%E8%BF%87%E7%A8%8B.gif"><br>如图所示，节点A和节点B的标识符的第lO、9、8位电平相同，因此两个节点侦听到的信息和它们发出的信息相同。第7位节点B发出一个“1”，但从节点上接收到的消息却是“0”，说明有更高优先级的节点占用总线发送消息。节点B会退出发送处于单纯监听方式而不发送数据；节点A成功发送仲裁位从而获得总线的控制权，继而发送全部消息。总线中的信号持续跟踪最后获得总线控制权发出的报文，本例中节点A的报文将被跟踪。这种非破坏性位仲裁方法的优点在于，在网络最终确定哪个节点被传送前，报文的起始部分已经在网络中传输了，因此具有高优先级的节点的数据传输没有任何延时。在获得总线控制权的节点发送数据过程中，其他节点成为报文的接收节点，并且不会在总线再次空闲之前发送报文。</p>
 <h3 id="数据传输协议："><a href="#数据传输协议：" class="headerlink" title="数据传输协议："></a>数据传输协议：</h3><p>主设备和从设备进行数据传输时，数据通过一条SDA数据线在主从设备之间传输0和1的串行数据。串行数据的结构分为：开始条件，地址位，读写位，应答位，数据位，停止条件。</p>
 <h4 id="开始条件："><a href="#开始条件：" class="headerlink" title="开始条件："></a>开始条件：</h4><p>主设备要开始通信时发送开始信号，执行：<br>将SDA线从高压电平转换到低压电平<br>将SCL从高电平切换成低压电平</p>
@@ -524,174 +175,48 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">I2C_detachClient</span><span class="params">(<span class="keyword">struct</span> i2c_client *client)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> err;</span><br><span class="line"><span class="keyword">if</span>(!client-&gt;adapter)</span><br><span class="line">    <span class="keyword">return</span> -ENODEV; <span class="comment">/* our client isn&#x27;t attached */</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span>((err = i2c_detach_client(client))) &#123;</span><br><span class="line">    printk( KERN_ERR <span class="string">&quot;Client deregistration failed (address=%x), client not detached.\n&quot;</span>, client-&gt;addr);</span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">client-&gt;adapter = <span class="literal">NULL</span>;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
 <p>}</p>
 <p><small>misslyh20080512202305122023080719980106202309281520825879280398965</small></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">李嘉图</p>
-  <div class="site-description" itemprop="description">一步一步往上爬，背着我的蜗牛壳，爬到葡萄架。</div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">4</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-  </nav>
-</div>
-
-
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2023</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">李嘉图</span>
-</div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
-  </div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-</body>
-</html>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Your name"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Your name</p><p class="is-size-6 is-block">Your title</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Your location</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">4</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">0</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ppoffice" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ppoffice"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile" href="https://bulma.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Bulma</span></span><span class="level-right"><span class="level-item tag">bulma.io</span></span></a></li></ul></div></div></div><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-09-30T08:43:59.000Z">2023-09-30</time></p><p class="title"><a href="/2023/09/30/MissingLi/">MissingLi</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-09-29T11:24:05.000Z">2023-09-29</time></p><p class="title"><a href="/2023/09/29/%E5%A4%B4%E8%84%91%E7%89%B9%E5%B7%A5%E9%98%9F%E8%A7%82%E8%B5%8F%E6%8A%A5%E5%91%8A-%E9%87%8D%E8%A6%81/">头脑特工队观赏报告(重要)</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-09-29T02:40:26.000Z">2023-09-29</time></p><p class="title"><a href="/2023/09/29/Linux%E9%A9%B1%E5%8A%A8-%E6%9E%84%E9%80%A0%E5%92%8C%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%9D%97%E4%B8%AA%E4%BA%BA%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/">Linux驱动-构造和运行模块个人学习总结</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-09-28T13:43:49.000Z">2023-09-28</time></p><p class="title"><a href="/2023/09/28/I2C%E9%A9%B1%E5%8A%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/">I2C驱动框架学习</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2023/"><span class="level-start"><span class="level-item">2023</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></div></div></div><!--!--><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">订阅更新</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">follow.it</h3><form action="" method="post" target="_blank"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Linux Kernel tyro" height="28"></a><p class="is-size-7"><span>&copy; 2023 李嘉图</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
