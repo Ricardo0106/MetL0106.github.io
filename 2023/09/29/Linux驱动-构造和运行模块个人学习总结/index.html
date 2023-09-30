@@ -18,21 +18,21 @@
   
     <meta name="description" content="我发现对于学习任何一门知识，在最开始只能背诵或抄写别人的一些总结，所以tyro阶段我会抄写一些别人的文章，进行复习总结。 我记得小时候看过一部电影《心灵捕手》，虽然主线剧情不是我要说的，但我仍然记者记忆中有个桥段，Will在哈佛附近的酒吧遇到Skylar的时候，Will最铁的哥们查克冒充历史系学生和美女Skylar搭讪，但哈佛大学的学生克拉克看破了查克是冒牌货，于是过来考查克历史学知识，Will不">
 <meta property="og:type" content="article">
-<meta property="og:title" content="关于">
+<meta property="og:title" content="Linux驱动-构造和运行模块个人学习总结">
 <meta property="og:url" content="http://example.com/2023/09/29/Linux%E9%A9%B1%E5%8A%A8-%E6%9E%84%E9%80%A0%E5%92%8C%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%9D%97%E4%B8%AA%E4%BA%BA%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="Linux Kernel tyro">
 <meta property="og:description" content="我发现对于学习任何一门知识，在最开始只能背诵或抄写别人的一些总结，所以tyro阶段我会抄写一些别人的文章，进行复习总结。 我记得小时候看过一部电影《心灵捕手》，虽然主线剧情不是我要说的，但我仍然记者记忆中有个桥段，Will在哈佛附近的酒吧遇到Skylar的时候，Will最铁的哥们查克冒充历史系学生和美女Skylar搭讪，但哈佛大学的学生克拉克看破了查克是冒牌货，于是过来考查克历史学知识，Will不">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/imgs/%E5%A4%96%E8%AE%BE%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/%E5%BF%83%E7%81%B5%E6%8D%95%E6%89%8B.webp">
 <meta property="article:published_time" content="2023-09-29T02:40:26.000Z">
-<meta property="article:modified_time" content="2023-09-30T14:11:38.136Z">
+<meta property="article:modified_time" content="2023-09-30T15:12:11.903Z">
 <meta property="article:author" content="李嘉图">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/imgs/%E5%A4%96%E8%AE%BE%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/%E5%BF%83%E7%81%B5%E6%8D%95%E6%89%8B.webp">
   
   
   
-  <title>关于 - Linux Kernel tyro</title>
+  <title>Linux驱动-构造和运行模块个人学习总结 - Linux Kernel tyro</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -92,7 +92,7 @@
   <header>
     
 
-<div class="header-inner" style="height: 60vh;">
+<div class="header-inner" style="height: 70vh;">
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -138,31 +138,7 @@
           
           
             <li class="nav-item">
-              <a class="nav-link" href="/categories/">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/tags/">
-                <i class="iconfont icon-tags-fill"></i>
-                <span>标签</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/Ricardo0106">
+              <a class="nav-link" href="/about">
                 <i class="iconfont icon-user-fill"></i>
                 <span>关于</span>
               </a>
@@ -198,7 +174,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="关于"></span>
+            <span id="subtitle" data-typed-text="Linux驱动-构造和运行模块个人学习总结"></span>
           
         </div>
 
@@ -258,31 +234,23 @@
     
       
 
-<div class="text-center">
-  <div class="about-info">
-    <div class="about-name">Qiuzibing</div>
-    <div class="about-intro">nice to meet Lee</div>
-    <div class="about-icons">
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
       
-        
-        
-        
-        <a href=https://github.com class="
-           hint--bottom hint--rounded"
-           aria-label=GitHub
-           target="_blank"
-        >
-          <i class="iconfont icon-github-fill" aria-hidden="true"></i>
-          
-        </a>
-      
-    </div>
-  </div>
-</div>
 
-<article class="about-content page-content mt-5">
-  <div class="markdown-body">
-    <p>我发现对于学习任何一门知识，在最开始只能背诵或抄写别人的一些总结，所以tyro阶段我会抄写一些别人的文章，进行复习总结。<br></p>
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Linux驱动-构造和运行模块个人学习总结</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>我发现对于学习任何一门知识，在最开始只能背诵或抄写别人的一些总结，所以tyro阶段我会抄写一些别人的文章，进行复习总结。<br></p>
 <p>我记得小时候看过一部电影《心灵捕手》，虽然主线剧情不是我要说的，但我仍然记者记忆中有个桥段，Will在哈佛附近的酒吧遇到Skylar的时候，Will最铁的哥们查克冒充历史系学生和美女Skylar搭讪，但哈佛大学的学生克拉克看破了查克是冒牌货，于是过来考查克历史学知识，Will不止回答了这些知识，还输出了一顿自己的理解。我一直不明白，同为学生时代的我们，究竟会有什么差距呢，后来看到这一段，我才发现，只有能输出自己的东西才算是在这个领域有所了解了吧？所以tyro阶段我也只能摘抄一些别人消化的知识点，多希望我也能有一天输出自己的东西。</p>
 <p><img src="/imgs/%E5%A4%96%E8%AE%BE%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/%E5%BF%83%E7%81%B5%E6%8D%95%E6%89%8B.webp" srcset="/img/loading.gif" lazyload></p>
 <p><small>提到《心灵捕手》我又想到:<br><br>你年轻彪悍，我如果和你谈论战争，你大可以向我大抛莎士比亚，背诵“共赴战场，亲爱的朋友”，但你从未亲临战阵，未试过把挚友的头拥入怀里，看着他吸着最后一口气，凝望着你，向你求助。不要以为，我了解你。也许我可以通过“知识”来看你，但那不是你，除非你愿意谈谈你自己，否则我不知道你到底是谁。有时候喜欢是一种非常简单的事，我没有进入过你的世界，只听你讲过自己的故事，你人生的前25年从未参与过，我喜欢的只是我所认识的25岁的你。我不知道为什么，我真真实实的做了一场梦，很久很久的梦，我把人生的25年从头过了一遍，非常真切的感受，30年的人生所有的故事主角都是你，我才发现，我的这份喜欢似乎是贯彻了这痛苦的一生。</small></p>
@@ -479,34 +447,115 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c">bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ sudo insmod module_parameters.ko  whom=dady howmany=<span class="hljs-number">3</span><br>bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ ls /sys/module/module_parameters<br>coresize  initsize   notes       refcnt    srcversion  uevent<br>holders   initstate  parameters  sections  taint<br>bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ ls /sys/module/module_parameters/parameters/<br>howmany  whom<br>bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ ls /sys/module/module_parameters/parameters/howmany <br>/sys/module/module_parameters/parameters/howmany<br>bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ cat /sys/module/module_parameters/parameters/howmany <br><span class="hljs-number">3</span><br>bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ cat /sys/module/module_parameters/parameters/whom <br>dady<br>bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ <br></code></pre></td></tr></table></figure>
 
 
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Linux驱动-构造和运行模块个人学习总结</div>
+      <div>http://example.com/2023/09/29/Linux驱动-构造和运行模块个人学习总结/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>李嘉图</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年9月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
   </div>
 
-  
-    <!-- Comments -->
-    <article id="comments" lazyload>
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/09/29/%E5%A4%B4%E8%84%91%E7%89%B9%E5%B7%A5%E9%98%9F%E8%A7%82%E8%B5%8F%E6%8A%A5%E5%91%8A-%E9%87%8D%E8%A6%81/" title="头脑特工队观赏报告(重要)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">头脑特工队观赏报告(重要)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/09/28/I2C%E9%A9%B1%E5%8A%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/" title="I2C驱动框架学习">
+                        <span class="hidden-mobile">I2C驱动框架学习</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
       
-      
-        
-      
-      
-
-    </article>
-  
-</article>
-
-
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
 
 
 
-  
+  </aside>
 
 
+    </div>
+  </div>
+</div>
 
-  
 
-
-
-  
 
 
 
@@ -515,6 +564,20 @@
 
 
   
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
 
 
 
@@ -612,6 +675,46 @@
   
 
 
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
 
 
   <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
