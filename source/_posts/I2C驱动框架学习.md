@@ -1,7 +1,10 @@
 ---
 title: I2C驱动框架学习
 date: 2023-09-28 21:43:49
-tags:
+index_img: https://github.com/Ricardo0106/Ricardo0106.github.io/blob/master/imgs/I2C%E9%A9%B1%E5%8A%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/I2C%E9%A9%B1%E5%8A%A8%E6%A1%86%E6%9E%B6.png
+category: Linux Kernel
+tags: 
+  - C
 typora-root-url: ./..
 ---
 

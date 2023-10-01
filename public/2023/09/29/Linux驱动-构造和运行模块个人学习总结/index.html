@@ -1,373 +1,822 @@
+
+
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
-  </script>
-
-  <meta name="description" content="一步一步往上爬，背着我的蜗牛壳，爬到葡萄架。">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="李嘉图">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="我发现对于学习任何一门知识，在最开始只能背诵或抄写别人的一些总结，所以tyro阶段我会抄写一些别人的文章，进行复习总结。 我记得小时候看过一部电影《心灵捕手》，虽然主线剧情不是我要说的，但我仍然记者记忆中有个桥段，Will在哈佛附近的酒吧遇到Skylar的时候，Will最铁的哥们查克冒充历史系学生和美女Skylar搭讪，但哈佛大学的学生克拉克看破了查克是冒牌货，于是过来考查克历史学知识，Will不">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux驱动-构造和运行模块个人学习总结">
 <meta property="og:url" content="http://example.com/2023/09/29/Linux%E9%A9%B1%E5%8A%A8-%E6%9E%84%E9%80%A0%E5%92%8C%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%9D%97%E4%B8%AA%E4%BA%BA%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="Linux Kernel tyro">
-<meta property="og:description" content="一步一步往上爬，背着我的蜗牛壳，爬到葡萄架。">
+<meta property="og:description" content="我发现对于学习任何一门知识，在最开始只能背诵或抄写别人的一些总结，所以tyro阶段我会抄写一些别人的文章，进行复习总结。 我记得小时候看过一部电影《心灵捕手》，虽然主线剧情不是我要说的，但我仍然记者记忆中有个桥段，Will在哈佛附近的酒吧遇到Skylar的时候，Will最铁的哥们查克冒充历史系学生和美女Skylar搭讪，但哈佛大学的学生克拉克看破了查克是冒牌货，于是过来考查克历史学知识，Will不">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/imgs/%E5%A4%96%E8%AE%BE%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/%E5%BF%83%E7%81%B5%E6%8D%95%E6%89%8B.webp">
 <meta property="article:published_time" content="2023-09-29T02:40:26.000Z">
-<meta property="article:modified_time" content="2023-09-29T02:40:50.803Z">
+<meta property="article:modified_time" content="2023-09-30T16:09:10.819Z">
 <meta property="article:author" content="李嘉图">
-<meta name="twitter:card" content="summary">
+<meta property="article:tag" content="Linux Kernel Driver">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/imgs/%E5%A4%96%E8%AE%BE%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/%E5%BF%83%E7%81%B5%E6%8D%95%E6%89%8B.webp">
+  
+  
+  
+  <title>Linux驱动-构造和运行模块个人学习总结 - Linux Kernel tyro</title>
 
-<link rel="canonical" href="http://example.com/2023/09/29/Linux%E9%A9%B1%E5%8A%A8-%E6%9E%84%E9%80%A0%E5%92%8C%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%9D%97%E4%B8%AA%E4%BA%BA%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/">
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
 
-  <title>Linux驱动-构造和运行模块个人学习总结 | Linux Kernel tyro</title>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
   
 
 
 
 
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
 
 
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
 
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
 
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
+<body>
+  
 
-</head>
+  <header>
+    
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Linux Kernel tyro</h1>
-      <span class="logo-line-after"><i></i></span>
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Linux Kernel tyro</strong>
     </a>
-  </div>
 
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
     </div>
   </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-  </ul>
 </nav>
 
+  
 
+<div id="banner" class="banner" parallax=true
+     style="background: url('/imgs/%E5%A3%81%E7%BA%B8/%E5%A3%81%E7%BA%B8.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Linux驱动-构造和运行模块个人学习总结"></span>
+          
+        </div>
 
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-09-29 10:40" pubdate>
+          2023年9月29日 上午
+        </time>
+      </span>
+    
+  </div>
 
-</div>
-    </header>
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          15k 字
+        
+      </span>
+    
 
     
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          122 分钟
+        
+      </span>
+    
+
+    
+    
   </div>
 
 
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/09/29/Linux%E9%A9%B1%E5%8A%A8-%E6%9E%84%E9%80%A0%E5%92%8C%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%9D%97%E4%B8%AA%E4%BA%BA%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="李嘉图">
-      <meta itemprop="description" content="一步一步往上爬，背着我的蜗牛壳，爬到葡萄架。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Linux Kernel tyro">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Linux驱动-构造和运行模块个人学习总结
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2023-09-29 10:40:26 / 修改时间：10:40:50" itemprop="dateCreated datePublished" datetime="2023-09-29T10:40:26+08:00">2023-09-29</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+        
+      </div>
 
       
-        
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
     </div>
 
-    
-    
-    
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Linux驱动-构造和运行模块个人学习总结</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>我发现对于学习任何一门知识，在最开始只能背诵或抄写别人的一些总结，所以tyro阶段我会抄写一些别人的文章，进行复习总结。<br></p>
+<p>我记得小时候看过一部电影《心灵捕手》，虽然主线剧情不是我要说的，但我仍然记者记忆中有个桥段，Will在哈佛附近的酒吧遇到Skylar的时候，Will最铁的哥们查克冒充历史系学生和美女Skylar搭讪，但哈佛大学的学生克拉克看破了查克是冒牌货，于是过来考查克历史学知识，Will不止回答了这些知识，还输出了一顿自己的理解。我一直不明白，同为学生时代的我们，究竟会有什么差距呢，后来看到这一段，我才发现，只有能输出自己的东西才算是在这个领域有所了解了吧？所以tyro阶段我也只能摘抄一些别人消化的知识点，多希望我也能有一天输出自己的东西。</p>
+<p><img src="/imgs/%E5%A4%96%E8%AE%BE%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91/%E5%BF%83%E7%81%B5%E6%8D%95%E6%89%8B.webp" srcset="/img/loading.gif" lazyload></p>
+<p><small>提到《心灵捕手》我又想到:<br><br>你年轻彪悍，我如果和你谈论战争，你大可以向我大抛莎士比亚，背诵“共赴战场，亲爱的朋友”，但你从未亲临战阵，未试过把挚友的头拥入怀里，看着他吸着最后一口气，凝望着你，向你求助。不要以为，我了解你。也许我可以通过“知识”来看你，但那不是你，除非你愿意谈谈你自己，否则我不知道你到底是谁。有时候喜欢是一种非常简单的事，我没有进入过你的世界，只听你讲过自己的故事，你人生的前25年从未参与过，我喜欢的只是我所认识的25岁的你。我不知道为什么，我真真实实的做了一场梦，很久很久的梦，我把人生的25年从头过了一遍，非常真切的感受，30年的人生所有的故事主角都是你，我才发现，我的这份喜欢似乎是贯彻了这痛苦的一生。</small></p>
+<p><small>ANY WAY，写这些东西的时候我的状态是非常不好的，最近这两年我失去了爱我的外婆，得了很多很重的疾病，毕业选择的第一家公司在春招结束的时候解散了，还有一个她。在这之前我的世界没有什么情绪，对生活也没有热情，感谢她给我平庸的人生带来了一些阳光。让我捡起来对生活的热爱，谢谢你，u complete me。人生太多变化，不知道还能在一起多久，我们已经是家人了吧，不要忘记我奥，死亡不是真的逝去，遗忘才是永恒的消亡。</small></p>
+<h1 id="构造和运行模块"><a href="#构造和运行模块" class="headerlink" title="构造和运行模块"></a>构造和运行模块</h1><h3 id="内核模块与应用程序的对比"><a href="#内核模块与应用程序的对比" class="headerlink" title="内核模块与应用程序的对比"></a>内核模块与应用程序的对比</h3><p>大多数中小规模的应用程序是从头到尾执行单个任务。<strong>模块只是预先注册自己以便服务于将来的某个请求</strong>，然后其初始化函数立即结束，模块的退出函数将在模块被卸载之前调用。<strong>内核模块的编程方式和事件驱动的编程有些类似。</strong><br>应用程序在退出时可以不管资源的释放或其他的清除工作。但<strong>模块的退出函数必须仔细撤销初始化函数所作的一切</strong>，否则，在系统重新引导之前某些东西就会残留在系统中。<br>应用程序可以调用它并未定义的函数，因为连接过程能够解析外部引用从而使用适当的函数库。但<strong>模块仅被链接到内核，它能调用的函数仅仅是由内核导出的那些函数，而不存在任何可链接的函数库。</strong><br>模块源文件中不能包含通常的头文件，只能使用作为内核一部分的函数。<br>应用程序开发过程中的段错误是无害的，并且总是可以使用调试器跟踪到源代码中的问题所在；内核错误即使不影响整个系统，也至少会杀死当前进程。</p>
+<h4 id="可重入"><a href="#可重入" class="headerlink" title="可重入"></a>可重入</h4><p>可重入性作为多线程编程里面重要的概念，相信大家或多或少都听说过、研究过甚至使用过。目前很多资料都重点在介绍重入锁、CAS等概念，对“可重入性”本身的讲解不是很多，所以JavaCool给大家整理了一些“可重入性”的相关知识，希望能帮助到大家！</p>
+<ul>
+<li><p>可重入的定义<br>简单定义:”可以正确重复使用”，有两个关键：1，可以重复使用；2，并能正确使用。意味着在多次执行的时候能得到正确的值，并不受其他调用的影响。<br>官方定义：若一个程序或子程序可以“在任意时刻被中断然后操作系统调度执行另外一段代码，这段代码又调用了该子程序不会出错”，则称其为可重入（reentrant或re-entrant）的。即当该子程序正在运行时，执行线程可以再次进入并执行它，仍然获得符合设计时预期的结果。与多线程并发执行的线程安全不同，可重入强调对单个线程执行时重新进入同一个子程序仍然是安全的。<br>这里也有一段比较好的英文阐释：<br>A computer program or routine is described as reentrant if it can be safely called again before its previous invocation has been completed (i.e it can be safely executed concurrently)<br>可重入函数主要用于多任务环境中，一个可重入的函数简单来说就是可以被中断的函数，也就是说，可以在这个函数执行的任何时刻中断它，转入OS调度下去执行另外一段代码，而返回控制时不会出现什么错误；而不可重入的函数由于使用了一些系统资源，比如全局变量区，中断向量表等，所以它如果被中断的话，可能会出现问题，这类函数是不能运行在多任务环境下的。</p>
+</li>
+<li><p>产生背景<br>可重入概念是在单线程操作系统的时代提出的。一个子程序的重入，可能由于自身原因，如执行了jmp或者call，类似于子程序的递归调用；或者由于操作系统的中断响应。UNIX系统的signal的处理，即子程序被中断处理程序或者signal处理程序调用。所以，可重入也可称作“异步信号安全”。这里的异步是指信号中断可发生在任意时刻。 重入的子程序，按照后进先出线性序依次执行。</p>
+</li>
+<li><p>编写可重入代码注意的条件<br>若一个函数是可重入的，则该函数应当满足下述条件：</p>
+</li>
+</ul>
+<p>不能含有静态（全局）非常量数据。<br>不能返回静态（全局）非常量数据的地址。<br>只能处理由调用者提供的数据。<br>不能依赖于单实例模式资源的锁。<br>调用(call)的函数也必需是可重入的。<br>上述条件就是要求可重入函数使用的所有变量都保存在呼叫堆叠的当前函数栈（frame）上，因此同一执行线程重入执行该函数时加载了新的函数帧，与前一次执行该函数时使用的函数帧不冲突、不互相覆盖，从而保证了可重入执行安全。</p>
+<p>多“用户&#x2F;对象&#x2F;进程优先级”以及多进程（Multiple processes），一般会使得对可重入代码的控制变得复杂。同时，IO代码通常不是可重入的，因为他们依赖于像磁盘这样共享的、单独的（类似编程中的静态、全域）资源。</p>
+<ul>
+<li>与线程安全的关系<br>可重入与线程安全两个概念都关系到函数处理资源的方式。但是，他们有重大区别：可重入概念会影响函数的外部接口，而线程安全只关心函数的实现。大多数情况下，要将不可重入函数改为可重入的，需要修改函数接口，使得所有的数据都通过函数的调用者提供。要将非线程安全的函数改为线程安全的，则只需要修改函数的实现部分。一般通过加入同步机制以保护共享的资源，使之不会被几个线程同时访问。</li>
+</ul>
+<p>操作系统背景与CPU调度策略：<br>可重入是在单线程操作系统背景下，重入的函数或者子程序，按照后进先出的线性序依次执行完毕。</p>
+<p>多线程执行的函数或子程序，各个线程的执行时机是由操作系统调度，不可预期的，但是该函数的每个执行线程都会不时的获得CPU的时间片，不断向前推进执行进度。可重入函数未必是线程安全的；线程安全函数未必是可重入的。</p>
+<p>例如，一个函数打开某个文件并读入数据。这个函数是可重入的，因为它的多个实例同时执行不会造成冲突；但它不是线程安全的，因为在它读入文件时可能有别的线程正在修改该文件，为了线程安全必须对文件加“同步锁”。<br>另一个例子，函数在它的函数体内部访问共享资源使用了加锁、解锁操作，所以它是线程安全的，但是却不可重入。因为若该函数一个实例运行到已经执行加锁但未执行解锁时被停下来，系统又启动该函数的另外一个实例，则新的实例在加锁处将转入等待。如果该函数是一个中断处理服务，在中断处理时又发生新的中断将导致资源死锁。fprintf函数就是线程安全但不可重入。</p>
+<ul>
+<li>可重入锁<br>可重入锁也叫递归锁，它俩等同于一回事，指的是同一线程外层函数获得锁之后，内层递归函数仍然能获得该锁的代码，同一线程在外层方法获取锁的时候，再进入内层方法会自动获取锁。也就是说，线程可以进入任何一个它已经拥有的锁所同步着的代码块。ReentrantLock 和 synchronized 就是典型的可重入锁！</li>
+</ul>
+<p><strong>操作系统的作用</strong>是</p>
+<ul>
+<li>为应用程序提供一个对计算机硬件的一致视图</li>
+<li>负责程序的独立操作并保护资源不受非法访问。该任务只有在CPU能够保护系统软件不受应用程序破坏时才能完成。</li>
+</ul>
+<p>人们在CPU中实现不同的操作模式（或者级别）。不同的级别具有不同的功能，在较低的级别中将禁止某些操作。程序代码只能通过有限数目的“门” 从一个级别切换到另一级别。Unix使用了两个这样的级别：内核运行在最高级别（也称作超级用户态），可以进行所有操作；应用程序运行在最低级别（即所谓的用户态），处理器控制着对硬件的直接访问以及对内存的非授权访问。两种模式具有不同的优先权等级，每个模式都有自己的内存映射，即自己的地址空间。</p>
+<p>应用程序执行系统调用或者被硬件中断挂起时，Unix将执行模式从用户空间切换到内核空间</p>
+<ul>
+<li>执行系统调用的内核代码运行在进程上下文中，它代表用户进程执行操作，因此可以访问进程地址空间的所有数据</li>
+<li>处理硬件中断的内核代码和进程是异步的，与任何一个特定进程无关。</li>
+</ul>
+<p>一个驱动程序通常要执行两类任务</p>
+<ul>
+<li>某些函数作为系统调用的一部分而执行</li>
+<li>其他函数负责中断处理</li>
+</ul>
+<h3 id="内核中的并发"><a href="#内核中的并发" class="headerlink" title="内核中的并发"></a>内核中的并发</h3><p>内核编程区别于常见应用程序编程的地方在于对并发的处理。即使是最简单的内核模块，都需要在编写时铭记：同一时刻，可能会有许多事情正在发生。</p>
+<h5 id="内核编程必须考虑并发的原因"><a href="#内核编程必须考虑并发的原因" class="headerlink" title="内核编程必须考虑并发的原因"></a>内核编程必须考虑并发的原因</h5><ul>
+<li><p>Linux系统中通常正在运行多个并发进程，他们可能同时使用我们的驱动程序。</p>
+</li>
+<li><p>大多数设备能够中断处理器，而中断处理程序异步运行，而且可能在驱动程序试图处理其他任务时被调用。</p>
+</li>
+<li><p>一些抽象软件，例如内核定时器，也在异步运行。</p>
+</li>
+<li><p>Linux可以运行在SMP系统上，可能同时有不止一个CPU运行我们的驱动程序。</p>
+</li>
+<li><p>在2.6中内核代码已经是可抢占的，意味着即使在单处理器系统上也存在许多类似多处理器系统的并发问题。</p>
+</li>
+</ul>
+<p>Linux内核代码（包括驱动程序代码）必须是可重入的，它必须能够同时运行在多个上下文中。对编写正确的内核代码来说，优良的并发管理是必需的。</p>
+<h4 id="当前进程"><a href="#当前进程" class="headerlink" title="当前进程"></a>当前进程</h4><p>虽然内核模块不像应用程序那样顺序执行，然而内核执行的大多数操作还是和某个特定的进程相关。<br>内核代码可通过访问全局项current来获得当前进程。它是一个指向struct task_struct的指针。current指针指向当前正在运行的进程。内核代码可以通过current获得与当前进程相关的信息。例如，下面的语句通过访问struct task_struct的某些成员来打印当前进程的ID和命令名：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">printk(KERN_INFO <span class="hljs-string">&quot;The process is \&quot; %s \&quot; (pid %i)\n&quot;</span>,<br>current-&gt;common,current-&gt;pid);<br></code></pre></td></tr></table></figure>
 
-      <footer class="post-footer">
+<p>为了支持SMP系统，内核开发这设计了一种能找到运行在相关CPU上的当前进程的机制。它必须是快速的，因为对current的引用会很频繁。一种不依赖于特定架构的机制通常是，<strong>将指向task_struct结构的指针隐藏在内核栈中</strong>。</p>
+<h2 id="编译和装载"><a href="#编译和装载" class="headerlink" title="编译和装载"></a>编译和装载</h2><h3 id="编译模块"><a href="#编译模块" class="headerlink" title="编译模块"></a>编译模块</h3><p>内核是一个大的、独立的程序，为了将它的各个片段放在一起，要满足很多详细而明确的要求。</p>
+<p>在构造内核模块之前，有一些先决条件首先应该得到满足</p>
+<ul>
+<li>确保具备正确版本的编译器、模块工具和其他必要的工具（Documentation&#x2F;Changes文件）。注意：使用太新的工具也偶尔会导致问题。</li>
+<li>准备内核树，配置并构造内核。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">obj-m := hello.o<br></code></pre></td></tr></table></figure>
 
-        
+<p>上面的赋值语句（它利用了GNU make的扩展语法）说明了有一个模块需要从目标文件hello.o中构造，而从该目标文件中构造的模块名称为hello.ko。</p>
+<p>如果要构造的模块名称为module.ko，并由两个源文件生成（file1.c和file2.c），那么makefile可编写如下</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs makefile">obj-m := module.o<br>module-objs := file1.o file2.o<br></code></pre></td></tr></table></figure>
+
+<p>为了让上面这种类型的makefile文件正常工作，<strong>必须在大的内核构造系统环境中调用它们</strong>。如果内核源代码树保存在~&#x2F;kernel-2.6目录，则用来构造模块的make命令（在包含模块代码和makefile的目录中输入）</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs makefile">make -C ~/kernel-2.6 M=`pwd` modules<br></code></pre></td></tr></table></figure>
+
+<p>上述命令<strong>首先改变目录到内核源代码目录</strong>，该目录保存由内核的顶层makefile文件。<strong>M&#x3D;选项</strong>让该makefile在构造modules目标之前返回到模块源代码目录。然后，<strong>modules目标指向obj-m变量中设定的模块</strong>。</p>
+<p>另一种makefile方法，可以使得<strong>内核树之外的模块构造</strong>更加容易。</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-comment"># If KERNELRELEASE is defined, we&#x27;ve been invoked from the</span><br><span class="hljs-comment"># kernel build system and can use its language.</span><br><span class="hljs-keyword">ifneq</span> (<span class="hljs-variable">$(KERNELRELEASE)</span>,)<br>    hello_world-objs := main.o<br>    obj-m := hello_world.o<br><br><span class="hljs-comment"># Otherwise we were called directly from the command</span><br><span class="hljs-comment"># line; invoke the kernel build system.</span><br><span class="hljs-keyword">else</span><br>    KERNELDIR ?= /lib/modules/<span class="hljs-variable">$(<span class="hljs-built_in">shell</span> uname -r)</span>/build<br>    PWD := <span class="hljs-variable">$(<span class="hljs-built_in">shell</span> pwd)</span><br><br><span class="hljs-meta"><span class="hljs-keyword">.PHONY</span>: modules</span><br><span class="hljs-section">modules:</span><br>	<span class="hljs-variable">$(MAKE)</span> -C <span class="hljs-variable">$(KERNELDIR)</span> M=<span class="hljs-variable">$(PWD)</span> modules<br><span class="hljs-keyword">endif</span><br><br><span class="hljs-meta"><span class="hljs-keyword">.PHONY</span>: clean</span><br><span class="hljs-section">clean:</span><br>	<span class="hljs-variable">$(MAKE)</span> -C <span class="hljs-variable">$(KERNELDIR)</span> M=<span class="hljs-variable">$(PWD)</span> clean<br><br></code></pre></td></tr></table></figure>
+
+<p>在一个典型的构造过程中，该makefile将被读取两次。当makefile从命令行运调用时，KERNELRELEASE变量并未设置，这个makefile通过已安装的模块目录中指向内核构造树的符号链接，定位内核的源代码目录。如果实际运行的内核并不是要构造的内核，则可以在命令行提供KENELDIR&#x3D;选项或者设置KERNELDIR环境变量，也可以修改makfile中用来设置KERNELDIR的行。找到内核源代码树之后，这个makefile会调用modules目标，通过之前描述的方法第二次运行make命令，以便运行内核构建系统。</p>
+<h3 id="装载和卸载模块"><a href="#装载和卸载模块" class="headerlink" title="装载和卸载模块"></a>装载和卸载模块</h3><p><strong>insmod</strong>将模块装入内核。它将模块的代码和数据装入内核，然后使用内核的符号表解析模块中任何为解析的符号。与链接器不同，内核不会修改模块的磁盘文件，仅仅修改内存中的副本。insmod可以接受一些命令行选项，可以在模块链接到内核之前给模块中的整型和字符串变量赋值。一个设计良好的模块，可以在装载时进行配置。</p>
+<p>函数<strong>sys_init_module</strong>给模块分配内核内存。有且只有系统调用的名字前带有sys_前缀。</p>
+<p><strong>modprobe</strong>也用来将模块装载到内核中。它与insmod的区别在于，会考虑要装载的模块是否引用了一些当前内核不存在的符号。如果存在这类引用，它会在当前模块搜索路径中查找定义了这些符号的其他模块。如果它找到了这些模块，则会同时将它们装载到内核。</p>
+<p><strong>rmmod</strong>可以从内核中移除模块。如果内核认为模块仍在使用状态或者内核被配置为禁止移除模块，则无法移除该模块。</p>
+<p><strong>lsmod</strong>列出当前装载到内核中的所有模块，它通过读取&#x2F;proc&#x2F;modules文件获得这些信息。有关当前已装载模块的信息也可以在&#x2F;sys&#x2F;module下找到。</p>
+<h3 id="版本依赖"><a href="#版本依赖" class="headerlink" title="版本依赖"></a>版本依赖</h3><p>在缺少modversion的情况下，我们的<strong>模块代码必须针对要链接的每个版本的内核重新编译</strong>。<strong>模块和特定的内核版本定义的数据结构和函数原型紧密关联</strong>。</p>
+<p>内核不会假定一个给定的模块是针对正确的内核版本构造的。在构造过程中，<strong>可以将自己的模块和vermagic.o链接</strong>。该目标文件包含了大量有关内核的信息，在试图装载模块时，这些信息可以用来检查模块和正在运行的内核的兼容性。</p>
+<p>如果打算编写一个<strong>能够和多个内核版本一起工作的模块</strong>，则必须<strong>使用宏以及#ifdef</strong>来构造并编译自己的代码。</p>
+<ul>
+<li>UTS_RELEASE，该宏扩展为一个描述内核版本的字符串</li>
+<li>LINUX_VERSION_CODE，该宏扩展为为内核版本的二进制表示，版本发行号中的每一部分对应一个字节</li>
+<li>KERNEL_VERSION(major,minor,release)，该宏以组成版本号的三个部分，创建整数的版本号</li>
+</ul>
+<p><strong>不应随意使用#ifdef条件语句</strong>将驱动程序代码弄得杂乱无章。最好的一个解决方法就是<strong>将所有相关的预处理条件语句集中存放在一个特定的头文件中</strong>。一般而言，<strong>依赖于特定版本的代码应该隐藏在低层宏或函数之中</strong>。</p>
+<h3 id="平台依赖"><a href="#平台依赖" class="headerlink" title="平台依赖"></a>平台依赖</h3><p>如果模块和某个给定内核工作，它也<strong>必须和内核一样了解目标处理器</strong>。通过<strong>链接vermagic.o</strong>，在装载模块时，内核会检查处理器相关的配置选项以便确保模块匹配于运行中的内核。</p>
+<h3 id="内核符号表"><a href="#内核符号表" class="headerlink" title="内核符号表"></a>内核符号表</h3><p>insmod使用<strong>公共内核符号表</strong>来解析模块中未定义的符号。<strong>公共内核符号表</strong>包含了<strong>所有的全局内核项（函数和变量）的地址</strong>，它是实现模块化驱动程序所必须的。</p>
+<p>当模块被装入内核后，它所<strong>导出的任何符号</strong>都会变成内核符号表的一部分。通常情况下，模块只需实现自己的功能，而无需导出任何符号。如果其他模块要从某个模块获得好处，则需要导出符号。这样就可以在其他模块上<strong>层叠新的模块</strong>，即<strong>模块层叠技术</strong>。</p>
+<p>如果一个模块要向其他模块导出符号，则应该使用下面的宏</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">EXPORT_SYMBOL(name);<br>EXPORT_SYMBOL_GPL(name);<br></code></pre></td></tr></table></figure>
+
+<p>GPL版本使得要导出的模块只能被GPL许可证下的模块使用。<strong>符号必须在模块文件的全局部分导出</strong>，不能在函数中导出。</p>
+<h3 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h3><p>内核是一个特定的环境，对需要和它接口的代码有其自己的一些要求。</p>
+<p>所有的模块代码中都包含下面两行代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span> </span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/init.h&gt;</span></span><br></code></pre></td></tr></table></figure>
+
+<p><strong>module.h</strong>包含可装载模块需要的大量符号和函数的定义。<strong>init.h</strong>是为了指定初始化和清除函数。</p>
+<p>大部分模块还包含<strong>moduleparam.h</strong>头文件，这样就可以<strong>在装载模块时向模块传递参数</strong>。</p>
+<p>尽管不是严格要求，模块应该指定所使用的许可证，例如</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">MODULE_LICENSE(<span class="hljs-string">&quot;GPL&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>内核可以识别</p>
+<ul>
+<li>GPL</li>
+<li>GPL v2</li>
+<li>GPL and additional rights</li>
+<li>Dual BSD&#x2F;GPL</li>
+<li>Dual MPL&#x2F;GPL</li>
+<li>Proprietary</li>
+</ul>
+<p>如果模块没有显式地标记为上述可识别的许可证，就会被假定是专有的，内核装在这种模块就会被“污染”。</p>
+<p>还可包含其他描述性定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c">MODULE_AUTHOR<br>MODULE_DESCRIPTION<br>MODULE_VERSION<br>MODULE_ALIAS<br>MODULE_DEVICE_TABLE<br></code></pre></td></tr></table></figure>
+
+<p>这些MODULE_声明，一般<strong>放在文件的最后</strong>。</p>
+<h3 id="初始化和关闭"><a href="#初始化和关闭" class="headerlink" title="初始化和关闭"></a>初始化和关闭</h3><p>模块的<strong>初始化函数</strong>负责<strong>注册</strong>模块所提供的任何<strong>设施</strong>。这里的<strong>设施</strong>指的是一个可以被应用程序访问的新功能，例如一个完整的驱动程序或一个新的软件抽象。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">int</span> __init <span class="hljs-title function_">initialization_function</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-comment">/*Initialization codes*/</span><br>&#125;<br><br>module_init(initialization_function);<br></code></pre></td></tr></table></figure>
+
+<p>初始化函数被声明为static，它在特定文件之外没有其他意义。但这并不是一个强制性规则，因为一个模块函数如果要对内核其他部分可见，则必须被显式导出。</p>
+<p>__init标记表明该函数仅在初始化期间使用。载模块被装载后，模块装载器会将初始化函数丢弃，以释放其占用的内存。__init和 __initdata很值得使用，但请注意，不要在结束初始化之后仍要使用的函数或数据上使用它们。</p>
+<p>module_init的使用是强制的。这个宏会在模块的目标代码中增加一个特殊的段，用于说明内核初始化函数所在的位置。</p>
+<p>模块可以注册许多不同类型的设施。对每种设施，对应有具体的内核函数用来完成注册。传递到内核注册函数的参数通常是指向用来描述新设施及设施名称的数据结构指针，而数据结构通常包含指向模块函数的指针。这样，模块中的函数就会在恰当的时间被内核调用。</p>
+<h4 id="清除函数"><a href="#清除函数" class="headerlink" title="清除函数"></a>清除函数</h4><p>每个重要的模块都需要一个清除函数，它在模块被移除前注销接口并向系统返回所有资源。该函数定义如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">void</span> __exit <span class="hljs-title function_">cleanup_function</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-comment">/*Cleanup codes*/</span><br>&#125;<br>module_exit(cleanup_function);<br></code></pre></td></tr></table></figure>
+
+<p>清除函数没有返回值。<br>__exit修饰词标记改代码仅用于模块卸载，编译器将把该函数放在特殊的ELF段中。被标记为__exit的函数只能在模块被卸载或者系统关闭时调用。</p>
+<p>module_exit声明帮助内核找到模块的清除函数。</p>
+<p>如果一个模块未定义清除函数，则内核不允许卸载该模块。</p>
+<h4 id="初始化过程中的错误处理"><a href="#初始化过程中的错误处理" class="headerlink" title="初始化过程中的错误处理"></a>初始化过程中的错误处理</h4><p>在内核中注册设施时，<strong>时刻铭记注册可能会失败</strong>。模块代码必须始终检查返回值，确保所有的操作已真正成功。</p>
+<p>如果在注册设施时遇到任何错误，首先要判断模块是否可以继续初始化。通常在某个注册失败后可以通过降低功能来继续运转。</p>
+<p>如果在发生了某个特定类型的错误之后无法继续装载模块，则要将出错之前的任何注册工作撤销掉。</p>
+<p>错误恢复的<strong>处理有时使用goto语句</strong>比较有效，可以避免大量复杂的、高度缩进的“结构化”逻辑。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> __init <span class="hljs-title function_">my_init_func</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-type">int</span> err;<br>	<span class="hljs-comment">/*Register using pointers and names */</span><br>	err = register_this(ptr1,<span class="hljs-string">&quot;skull&quot;</span>);<br>	<span class="hljs-keyword">if</span>(err)<br>		<span class="hljs-keyword">goto</span> fail_this;<br>	err = register_that(ptr2,<span class="hljs-string">&quot;skull&quot;</span>);<br>	<span class="hljs-keyword">if</span>(err)<br>		<span class="hljs-keyword">goto</span> fail_that;<br>	err = register_those(ptr3,<span class="hljs-string">&quot;skull&quot;</span>);<br>	<span class="hljs-keyword">if</span>(err)<br>		<span class="hljs-keyword">goto</span> fail_those;<br>	<span class="hljs-comment">/*Success*/</span><br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><br>fail_those:<br>	unregister_that(ptr2,<span class="hljs-string">&quot;skull&quot;</span>);<br>fail_that:<br>	unregister_this(ptr1,<span class="hljs-string">&quot;skull&quot;</span>);<br>fail_this:<br>	<span class="hljs-keyword">return</span> err;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>以上的代码再出错的时候使用goto语句，它将只撤销出错时刻以前所成功注册的那些设施。<br>my_init_module的返回值err是一个错误编码，它是定义在&lt;linux&#x2F;error.h&gt;中的负整数。每次返回合适的错误编码是一个好习惯。</p>
+<p>模块的清除函数需要撤销初始化函数所注册的所有设施，习惯上，以相反于注册的顺序撤销设施。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> __exit <span class="hljs-title function_">my_cleanup_function</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	unregister_those(ptr3,<span class="hljs-string">&quot;skull&quot;</span>);<br>	unregister_that(ptr2,<span class="hljs-string">&quot;skull&quot;</span>);<br>	unregister_this(ptr1,<span class="hljs-string">&quot;skull&quot;</span>);<br>	<span class="hljs-keyword">return</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>每当发生错误时从初始化函数中调用清除函数</strong>，将减少代码的重复并使代码更清晰、更有条理。当然，清除函数<strong>必须在撤销每项设施的注册之前检查它的状态</strong>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">something</span> *<span class="hljs-title">item1</span>;</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">somethingelse</span> *<span class="hljs-title">item2</span>;</span><br><span class="hljs-type">int</span> stuff_ok;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">my_cleanup</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-keyword">if</span>(item1)<br>		release_thing(item1);<br>	<span class="hljs-keyword">if</span>(item2)<br>		release_thing2(item2);<br>	<span class="hljs-keyword">if</span>(stuff_ok)<br>		unregister_stuff();<br>	<span class="hljs-keyword">return</span>;<br>&#125;<br><br><span class="hljs-type">int</span> __init <span class="hljs-title function_">my_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-type">int</span> err = -ENOMEM;<br>	item1 = allocate_thing(arguments);<br>	item2 = allocate_thing2(arguments2);<br>	<span class="hljs-keyword">if</span>(!item1 || !item2)<br>		<span class="hljs-keyword">goto</span> fail;<br>	err = register_stuff(item1,item2);<br>	<span class="hljs-keyword">if</span>(!err)<br>		stuff_ok = <span class="hljs-number">1</span>;<br>	<span class="hljs-keyword">else</span><br>		stuff_ok = <span class="hljs-number">0</span>;<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><br>fail:<br>	my_cleanup();<br>	<span class="hljs-keyword">return</span> err;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>以上代码中的初始化方式可以扩展到对大量设施的支持。需要注意的是，因为清除函数被非退出代码调用，因此<strong>不能将清除函数标记为__exit</strong>。</p>
+<h4 id="模块装载竞争"><a href="#模块装载竞争" class="headerlink" title="模块装载竞争"></a>模块装载竞争</h4><p>首先要始终铭记的是，<strong>在注册完成后，内核的某些部分可能会立即使用我们刚刚注册的任何设施</strong>。也就是说，<strong>初始化函数还在运行的时候，内核就完全可能调用我们的模块</strong>。</p>
+<p>所以，<strong>在首次注册完成后，代码就应该准备好被内核的其他部分调用，在用来支持某个设施的所有内部初始化完成之前，不要注册任何设施。</strong></p>
+<h3 id="模块参数"><a href="#模块参数" class="headerlink" title="模块参数"></a>模块参数</h3><p>由于系统的不同，<strong>驱动程序需要的参数也会发生变化</strong>，例如设备编号和一些用来控制驱动程序操作方式的参数。为满足这种需求，<strong>内核允许对驱动程序指定参数</strong>，而这些参数<strong>可在装载驱动程序模块时改变。</strong></p>
+<p>这些<strong>参数的值可在运行insmod或modprobe命令时赋值</strong>，而<strong>modprobe还可以从其配置文件（&#x2F;etc&#x2F;modprobe.conf）中读取参数值</strong>。这两个命令可以接受几种参数类型的赋值</p>
+<ul>
+<li>bool</li>
+<li>invbool：bool和invbool关联的变量应该是int类型</li>
+<li>charp：字符指针值。</li>
+<li>int</li>
+<li>long</li>
+<li>short</li>
+<li>uint</li>
+<li>ulong</li>
+<li>ushort</li>
+</ul>
+<p>在insmod改变模块参数之前，<strong>模块必须让这些参数对insmod命令可见</strong>。参数必须<strong>通过module_param宏来声明</strong>，它有三个参数</p>
+<ul>
+<li>变量的名称</li>
+<li>类型</li>
+<li>用于sysfs入口项的访问许可掩码</li>
+</ul>
+<p>这个宏<strong>必须放在任何函数之外</strong>，通常是在源文件的头部。</p>
+<p>模块的装载器<strong>也支持数组参数</strong>，在<strong>提供数组值时用逗号划分各数组成员</strong>。要声明数组参数，使用<strong>宏module_param_array(name,type,num,perm)<strong>。模块装载器会</strong>拒绝接受超过数组大小的值</strong>。</p>
+<p>如果我们<strong>需要的类型不在上面列出的清单中</strong>，可以使用<strong>模块代码中的钩子</strong>来定义这些类型。</p>
+<p><strong>所有模块参数都应给定一个默认值</strong>，insmod只会在用户明确设置了参数的值的情况下参会改变参数的值。</p>
+<p><strong>module_param的最后一个参数</strong>是访问许可值，它用来<strong>控制谁能访问sysfs中对模块参数的表述</strong></p>
+<ul>
+<li>如果perm被设置为0，就不会有对应的sysfs入口项</li>
+<li>否则模块参数会在sys&#x2F;module中出现，并设置为给定的访问许可</li>
+</ul>
+<p>如果一个参数通过sysfs被修改，内核不会以任何方式通知模块。大多数情况下，不应该让模块参数可写。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/init.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/kernel.h&gt;</span></span><br><br><span class="hljs-type">static</span> <span class="hljs-type">char</span> *whom = <span class="hljs-string">&quot;Mom&quot;</span>;<br><span class="hljs-type">static</span> <span class="hljs-type">int</span> howmany = <span class="hljs-number">1</span>;<br><br>module_param(howmany, <span class="hljs-type">int</span>,   S_IRUGO);<br>module_param(whom,    charp, S_IRUGO);<br><br><span class="hljs-type">static</span><br><span class="hljs-type">int</span> __init <span class="hljs-title function_">m_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	printk(KERN_WARNING <span class="hljs-string">&quot;parameters test module is loaded\n&quot;</span>);<br><br>	<span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; howmany; ++i) &#123;<br>		printk(KERN_WARNING <span class="hljs-string">&quot;#%d Hello, %s\n&quot;</span>, i, whom);<br>	&#125;<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br><span class="hljs-type">static</span><br><span class="hljs-type">void</span> __exit <span class="hljs-title function_">m_exit</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	printk(KERN_WARNING <span class="hljs-string">&quot;parameters test module is unloaded\n&quot;</span>);<br>&#125;<br><br>module_init(m_init);<br>module_exit(m_exit);<br><br>MODULE_LICENSE(<span class="hljs-string">&quot;GPL&quot;</span>);<br>MODULE_AUTHOR(<span class="hljs-string">&quot;Bryan&quot;</span>);<br>MODULE_DESCRIPTION(<span class="hljs-string">&quot;Module parameters test program&quot;</span>);<br><br></code></pre></td></tr></table></figure>
+
+<p>直接使用insmod，装载模块</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs elixir">bryan<span class="hljs-variable">@ubuntu</span><span class="hljs-symbol">:~/Desktop/Linux-Device-Driver-master/</span><span class="hljs-number">02_</span>module_parameters<span class="hljs-variable">$ </span>sudo insmod module_parameters.ko <br>bryan<span class="hljs-variable">@ubuntu</span><span class="hljs-symbol">:~/Desktop/Linux-Device-Driver-master/</span><span class="hljs-number">02_</span>module_parameters<span class="hljs-variable">$ </span>dmesg | tail <span class="hljs-number">-10</span><br>[  <span class="hljs-number">282.742416</span>] <span class="hljs-symbol">raid6:</span> .... xor() <span class="hljs-number">21210</span> <span class="hljs-title class_">MB</span>/s, rmw enabled<br>[  <span class="hljs-number">282.742417</span>] <span class="hljs-symbol">raid6:</span> using avx2x2 recovery algorithm<br>[  <span class="hljs-number">282.783190</span>] <span class="hljs-symbol">xor:</span> automatically using best checksumming function   avx       <br>[  <span class="hljs-number">282.877516</span>] <span class="hljs-title class_">Btrfs</span> loaded, crc32c=crc32c-intel<br>[  <span class="hljs-number">367.429218</span>] parameters test module is unloaded<br>[  <span class="hljs-number">378.711958</span>] parameters test module is loaded<br>[  <span class="hljs-number">378.711959</span>] <span class="hljs-comment">#0 Hello, Mom</span><br>[  <span class="hljs-number">470.278217</span>] parameters test module is unloaded<br>bryan<span class="hljs-variable">@ubuntu</span><span class="hljs-symbol">:~/Desktop/Linux-Device-Driver-master/</span><span class="hljs-number">02_</span>module_parameters<span class="hljs-variable">$ </span><br></code></pre></td></tr></table></figure>
+
+<p>使用insmod装载模块时，携带参数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c">bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ sudo insmod module_parameters.ko  whom=dady howmany=<span class="hljs-number">3</span><br>bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ sudo rmmod module_parameters <br>bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ dmesg | tail <span class="hljs-number">-10</span><br>[  <span class="hljs-number">378.711959</span>] #<span class="hljs-number">0</span> Hello, Mom<br>[  <span class="hljs-number">470.278217</span>] parameters test module is unloaded<br>[  <span class="hljs-number">473.729918</span>] parameters test module is loaded<br>[  <span class="hljs-number">473.729919</span>] #<span class="hljs-number">0</span> Hello, Mom<br>[  <span class="hljs-number">556.020495</span>] parameters test module is unloaded<br>[  <span class="hljs-number">578.373167</span>] parameters test module is loaded<br>[  <span class="hljs-number">578.373168</span>] #<span class="hljs-number">0</span> Hello, dady<br>[  <span class="hljs-number">578.373168</span>] #<span class="hljs-number">1</span> Hello, dady<br>[  <span class="hljs-number">578.373169</span>] #<span class="hljs-number">2</span> Hello, dady<br>[  <span class="hljs-number">582.573809</span>] parameters test module is unloaded<br>bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ <br></code></pre></td></tr></table></figure>
+
+<p>在insmod装载模块之前，在&#x2F;sys&#x2F;module目录下无法找到module_parameters目录</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c">bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ ls /sys/module/module_parameters<br>ls: cannot access <span class="hljs-string">&#x27;/sys/module/module_parameters&#x27;</span>: No such file or directory<br>bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ <br></code></pre></td></tr></table></figure>
+
+<p>insmod装在模块后，可以在&#x2F;sys&#x2F;module目录下找到module_parameters目录，并在&#x2F;sys&#x2F;module&#x2F;module_parameters&#x2F;parameters目录下看到两个参数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c">bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ sudo insmod module_parameters.ko  whom=dady howmany=<span class="hljs-number">3</span><br>bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ ls /sys/module/module_parameters<br>coresize  initsize   notes       refcnt    srcversion  uevent<br>holders   initstate  parameters  sections  taint<br>bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ ls /sys/module/module_parameters/parameters/<br>howmany  whom<br>bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ ls /sys/module/module_parameters/parameters/howmany <br>/sys/module/module_parameters/parameters/howmany<br>bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ cat /sys/module/module_parameters/parameters/howmany <br><span class="hljs-number">3</span><br>bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ cat /sys/module/module_parameters/parameters/whom <br>dady<br>bryan@ubuntu:~/Desktop/Linux-Device-Driver-master/<span class="hljs-number">02</span>_module_parameters$ <br></code></pre></td></tr></table></figure>
 
 
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2023/09/28/I2C%E9%A9%B1%E5%8A%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/" rel="prev" title="I2C驱动框架学习">
-      <i class="fa fa-chevron-left"></i> I2C驱动框架学习
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2023/09/29/%E5%A4%B4%E8%84%91%E7%89%B9%E5%B7%A5%E9%98%9F%E8%A7%82%E8%B5%8F%E6%8A%A5%E5%91%8A-%E9%87%8D%E8%A6%81/" rel="next" title="头脑特工队观赏报告(重要)">
-      头脑特工队观赏报告(重要) <i class="fa fa-chevron-right"></i>
-    </a></div>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Linux-Kernel-Driver/" class="print-no-link">#Linux Kernel Driver</a>
+      
     </div>
-      </footer>
-    
-  </article>
   
-  
-  
+</div>
 
 
+              
+  
 
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Linux驱动-构造和运行模块个人学习总结</div>
+      <div>http://example.com/2023/09/29/Linux驱动-构造和运行模块个人学习总结/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>李嘉图</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年9月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
           </div>
-          
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
 
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/09/29/%E5%A4%B4%E8%84%91%E7%89%B9%E5%B7%A5%E9%98%9F%E8%A7%82%E8%B5%8F%E6%8A%A5%E5%91%8A-%E9%87%8D%E8%A6%81/" title="头脑特工队观赏报告(重要)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">头脑特工队观赏报告(重要)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/09/28/I2C%E9%A9%B1%E5%8A%A8%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/" title="I2C驱动框架学习">
+                        <span class="hidden-mobile">I2C驱动框架学习</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://github.com/Ricardo0106" target="_blank" rel="nofollow noopener"><span>Ricardo</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
       }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
     }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
     });
-  }
+  });
 </script>
 
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
 
-  <aside class="sidebar">
-    <div class="sidebar-inner">
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
 
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
+  <script>Fluid.plugins.codeWidget();</script>
 
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">李嘉图</p>
-  <div class="site-description" itemprop="description">一步一步往上爬，背着我的蜗牛壳，爬到葡萄架。</div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">3</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-  </nav>
-</div>
-
-
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2023</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">李嘉图</span>
-</div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
-  </div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
 
-<script src="/js/utils.js"></script>
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
 
-<script src="/js/motion.js"></script>
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
 
 
-<script src="/js/schemes/pisces.js"></script>
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
 
 
-<script src="/js/next-boot.js"></script>
 
 
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
 
 
   
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 </body>
 </html>
