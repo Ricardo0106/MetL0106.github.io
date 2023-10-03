@@ -413,6 +413,7 @@ footer:
     # Options: busuanzi | leancloud
     source: "busuanzi"
 
+
   # 国内大陆服务器的备案信息
   # For Chinese mainland website policy, other areas keep disable
   beian:
@@ -425,6 +426,9 @@ footer:
     police_code: 12345678
     # 公安备案的图片. 为空时不显示备案图片
     police_icon: /img/police_beian.png
+
+  
+
 
 
 #---------------------------
